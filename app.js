@@ -35,6 +35,9 @@ const dataSchema = new mongoose.Schema({
     },
     imagedomain:{
         type:String,
+    },
+    Categories:{
+        type:String,
     }
 });
 
@@ -76,8 +79,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
 // Data submission endpoint
 app.post('/submit', (req, res) => {
-  const { summarizedContent,campaignId,campaignName,uniqueId,whitepaperHeading,filePath,imagedomain} = req.body;
-  const newData = new Data({ summarizedContent,campaignId,campaignName,uniqueId,whitepaperHeading,filePath,imagedomain});
+  const { summarizedContent,campaignId,campaignName,uniqueId,whitepaperHeading,filePath,imagedomain,Categories} = req.body;
+  const newData = new Data({ summarizedContent,campaignId,campaignName,uniqueId,whitepaperHeading,filePath,imagedomain,Categories});
   newData.save()
     .then(data => res.json(data))
     .catch(err => res.status(400).json({ error: err.message }));
@@ -99,15 +102,22 @@ app.delete('/data/:id', async (req, res) => {
     }
   });
 
-// server start
-app.listen(process.env.PORT);
 
+// Start server
+const PORT = process.env.PORT || 3000; // Use port from environment variable or default to 3000
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
-// connection
-async function main() {
-    const res = await mongoose.connect(process.env.DB,{useNewUrlParser: true,
-        useUnifiedTopology: true})
-        const data = res.default
-        console.log(data.STATES['1']);
+// MongoDB connection
+async function connectToDatabase() {
+    try {
+        await mongoose.connect(process.env.DB);
+        console.log('Connected to MongoDB');
+    } catch (error) {
+        console.error('Error connecting to database:', error);
+        process.exit(1); // Exit the process if unable to connect to the database
+    }
 }
-main()
+
+connectToDatabase();
