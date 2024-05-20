@@ -131,10 +131,11 @@ app.put('/data/:id',async (req,res)=>{
 
 
   // get data by campaign name
-app.get('/data/:campaignName', async (req, res) => {
+app.get('/data/campaign/:campaignName', async (req, res) => {
   try {
       const campaignName = req.params.campaignName;
-      const data = await Data.find({ campaignName: campaignName });
+      const data = await Data.find({campaignName: campaignName });
+      console.log("The Data Is:",data);
       res.json(data);
   } catch (error) {
       console.error('Error fetching data:', error);
@@ -153,10 +154,6 @@ app.get('/data/:Categories',async (req,res)=>{
     res.status(500).json({ message: 'Internal server error' });
   }
 })
-
-
-
-
 
 // Start server
 const PORT = process.env.PORT || 3000; // Use port from environment variable or default to 3000
